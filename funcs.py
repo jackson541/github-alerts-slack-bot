@@ -27,14 +27,13 @@ def get_not_mergeable_prs():
     for pr in pulls:
         pr_detail = repo.get_pull(pr.number)
         if pr_detail.mergeable == None:
-            """ After merge a PR into BRANCH_TO_TRACK, github set all others PRs opens to it with mergeable = None.
+            """ After merge a PR into BRANCH_TO_TRACK, GitHub set all others PRs opens to it with mergeable = None.
             So, is necessary send a request for this PRs and await some time to GitHub calculated again mergeable of they. """
             time.sleep(2)
             pr_detail = repo.get_pull(pr.number)
 
         if not pr_detail.mergeable and pr_detail.mergeable != None: 
             not_mergeable_prs.append(str(pr.number))
-            print(pr.number, pr_detail.mergeable, pr_detail.mergeable_state)
 
     return not_mergeable_prs
 
