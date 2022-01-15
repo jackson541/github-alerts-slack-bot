@@ -1,6 +1,6 @@
 from flask import request, Response, Blueprint
 from .check_signature import verify_signature
-from .funcs import check_pr_branch_is_correct, check_not_mergeable_prs
+from .funcs import check_pr_branch_is_correct, get_not_mergeable_prs, notify_not_mergeable_prs_in_slack
 import json
 
 bp = Blueprint('main', __name__, url_prefix='/')
@@ -14,10 +14,10 @@ def check_prs():
     if not check_pr_branch_is_correct(json.loads(request.data)):
         return Response(status=200)
 
-    not_mergeable_prs = check_not_mergeable_prs()
+    not_mergeable_prs = get_not_mergeable_prs()
 
     if not_mergeable_prs:
-        pass
+        notify_not_mergeable_prs_in_slack(not_mergeable_prs)
     else:
         print('all opens PRs are OK!')
 
