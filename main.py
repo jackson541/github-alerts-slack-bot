@@ -11,7 +11,9 @@ def check_prs():
     if not verify_signature(signature_256, request.data):
         return Response(status=403)
 
-    if not check_pr_branch_is_correct(json.loads(request.data)):
+    request_data = json.loads(request.data)
+
+    if not check_pr_branch_is_correct(request_data):
         return Response(status=200)
 
     not_mergeable_prs = get_not_mergeable_prs()

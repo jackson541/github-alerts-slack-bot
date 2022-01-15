@@ -1,7 +1,7 @@
 import hmac
 from .constants import *
 
-def verify_signature(signature, body):
+def verify_signature(signature: str, body: bytes):
     """
     Verify if call of API comes from correct project of github 
     """
