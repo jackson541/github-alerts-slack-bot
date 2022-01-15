@@ -3,10 +3,13 @@ from .constants import *
 import requests
 import json
 import time
+import redis
 
 # using an access token
 g = Github(ACCESS_TOKEN)
 repo = g.get_repo(PROJECT_TO_TRACK)
+redis_var = redis.Redis(host='localhost', port=6379, db=0)
+
 
 def check_pr_branch_is_correct(request_data: dict):
     """
@@ -38,9 +41,25 @@ def get_not_mergeable_prs():
     return not_mergeable_prs
 
 
+def check_there_are_new_not_mergeable_pr(not_mergeable_prs: list):
+    """
+    Check if in the list of PRs with conflicts there are any new PR
+
+    - not_mergeable_prs [array]: list of Pull Resquest IDs in string format
+    """
+    concated_list_prs = ','.join(not_mergeable_prs)
+    prs_in_byte = redis_var.get('prs_conflicts')
+    
+    if prs_in_byte and prs_in_byte.decode('utf-8') == concated_list_prs:
+        return False
+        
+    redis_var.setex('prs_conflicts', ONE_DAY_IN_SECONDS, bytes(concated_list_prs, encoding='utf-8'))
+    return True
+
+
 def notify_not_mergeable_prs_in_slack(not_mergeable_prs: list):
     """
-    Send notification to slack with de number of PRs with conflicts
+    Send notification to slack with the IDs of PRs with conflicts
 
     - not_mergeable_prs [array]: list of Pull Resquest IDs in string format
     """
