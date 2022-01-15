@@ -1,0 +1,6 @@
+import os
+
+SECRET_ACCESS = os.getenv('SECRET_ACCESS')
+ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
+PROJECT_TO_TRACK = os.getenv('PROJECT_TO_TRACK')
+BRANCH_TO_TRACK = os.getenv('BRANCH_TO_TRACK')
