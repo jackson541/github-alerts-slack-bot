@@ -4,14 +4,14 @@ import requests
 import json
 import time
 import redis
-import urlparse
+from urllib.parse import urlparse
 
 # using an access token
 g = Github(ACCESS_TOKEN)
 repo = g.get_repo(PROJECT_TO_TRACK)
 
 if REDIS_URL:
-    url = urlparse.urlparse(REDIS_URL)
+    url = urlparse(REDIS_URL)
     redis_var = redis.Redis(host=url.hostname, port=url.port, password=url.password)
 else:
     redis_var = redis.Redis(host='localhost', port=6379, db=0)
