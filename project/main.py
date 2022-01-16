@@ -5,7 +5,7 @@ import json
 
 bp = Blueprint('main', __name__, url_prefix='/')
 
-@bp.route('/', methods=['POST',])
+@bp.route('/check_conflicts', methods=['POST',])
 def check_prs():
     signature_256 = request.headers['X-Hub-Signature-256']
     if not verify_signature(signature_256, request.data):
