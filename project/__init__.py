@@ -5,7 +5,6 @@ from . import main
 def create_app():
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    print('tessssssteeeeeee')
 
     app.register_blueprint(main.bp)
     
