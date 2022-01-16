@@ -4,11 +4,17 @@ import requests
 import json
 import time
 import redis
+import urlparse
 
 # using an access token
 g = Github(ACCESS_TOKEN)
 repo = g.get_repo(PROJECT_TO_TRACK)
-redis_var = redis.Redis(host='localhost', port=6379, db=0)
+
+if REDIS_URL:
+    url = urlparse.urlparse(REDIS_URL)
+    redis_var = redis.Redis(host=url.hostname, port=url.port, password=url.password)
+else:
+    redis_var = redis.Redis(host='localhost', port=6379, db=0)
 
 
 def check_pr_branch_is_correct(request_data: dict):
