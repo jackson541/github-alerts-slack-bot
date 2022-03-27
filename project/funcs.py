@@ -53,12 +53,14 @@ def check_there_are_new_not_mergeable_pr(not_mergeable_prs: list):
 
     - not_mergeable_prs [array]: list of Pull Resquest IDs in string format
     """
-    concated_list_prs = ','.join(not_mergeable_prs)
-    prs_in_byte = redis_var.get('prs_conflicts')
-    
-    if prs_in_byte and prs_in_byte.decode('utf-8') == concated_list_prs:
+    old_prs_in_byte = redis_var.get('prs_conflicts')
+    old_prs_with_conflicts = old_prs_in_byte.decode('utf-8').split(',') if old_prs_in_byte else list()
+
+    new_prs_in_conflict = list(set(not_mergeable_prs) - set(old_prs_with_conflicts))
+    if not new_prs_in_conflict:
         return False
-        
+    
+    concated_list_prs = ','.join(new_prs_in_conflict + old_prs_with_conflicts)
     redis_var.setex('prs_conflicts', ONE_DAY_IN_SECONDS, bytes(concated_list_prs, encoding='utf-8'))
     return True
 
